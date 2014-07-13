@@ -28,3 +28,10 @@
       empty-begin) )
 
 (define empty-begin 813)
+
+; evlis: Evaluate list of expressions (exps) and returns result values in a list.
+(define (evlis exps env)
+  (if (pair? exps)
+      (cons (evaluate (car exps) env)
+	    (evlis (cdr exps) env) )
+      ;() ) )
