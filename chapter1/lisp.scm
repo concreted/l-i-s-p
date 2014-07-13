@@ -30,8 +30,18 @@
 (define empty-begin 813)
 
 ; evlis: Evaluate list of expressions (exps) and returns result values in a list.
+; Evaluates right-to-left.
 (define (evlis exps env)
   (if (pair? exps)
       (cons (evaluate (car exps) env)
 	    (evlis (cdr exps) env) )
       ;() ) )
+
+#|
+; evlis - defined with left-to-right evaluation. 
+(define (evlis exps env)
+  (if (pair? exps)
+      (let ((argument1 (evaluate (car exps) env)))
+	(cons argument1 (evlis (cdr exps) env)) )
+      ;() ) )
+|#
