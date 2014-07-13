@@ -1,4 +1,4 @@
-; evaluate function takes program expression (e) and environment (env) as input. 
+; evaluate: takes program expression (e) and environment (env) as input. 
 ; Environment is a data structure associating variables and values. 
 (define (evaluate e env) 
   (if (atom? e)                             ; (atom? e) == (not (pair? e))
@@ -17,3 +17,14 @@
 	(else     (invoke (evaluate (car e) env)
 			  (evlis (cdr e) env) )) ) ) )   
 
+; eprogn: Evaluate expressions (exps) with environment (env) sequentially in order.
+; Only executes if (exps) is a pair? 
+(define (eprogn exps env) 
+  (if (pair? exps)
+      (if (pair? (cdr exps))
+	  (begin (evaluate (car exps) env)
+		 (eprogn (cdr exps) env) )
+	  (evaluate (car exps) env) )
+      empty-begin) )
+
+(define empty-begin 813)
