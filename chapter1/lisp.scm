@@ -82,7 +82,7 @@
 ; (body) in that environment.
 (define (make-function variables body env)
   (lambda (values)
-    (eprogn body (extend env.init variables values)) ) )
+    (eprogn body (extend env variables values)) ) )
 
 #|
 ; evlis - defined with left-to-right evaluation. 
