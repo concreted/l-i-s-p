@@ -70,6 +70,20 @@
 	     (wrong "Too many values") ) )
 	((symbol? variables) (cons (cons variables values) env)) ) )
 
+; invoke: Call a function (fn) with arguments (args)
+(define (invoke fn args)
+  (if (procedure? fn)
+      (fn args)
+      (wrong "Not a function" fn) ) )
+
+; make-function: Creates a new environment used during function execution.
+; Creates new environment by adding variables bound during function call 
+; (variables) to parent environment (env), and executes function body
+; (body) in that environment.
+(define (make-function variables body env)
+  (lambda (values)
+    (eprogn body (extend env.init variables values)) ) )
+
 #|
 ; evlis - defined with left-to-right evaluation. 
 (define (evlis exps env)
