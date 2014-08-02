@@ -11,7 +11,7 @@
 #! 
 Expected result is (c b a).
 
-In a dynamic list, result is (0 0 0). 
+In a dynamic Lisp, result is (0 0 0). 
 
 Why? Since (map) uses variable l, the argument '(2 1 0) 
 passed to (map) is captured by l in the (lambda) call
