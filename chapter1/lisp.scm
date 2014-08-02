@@ -17,6 +17,18 @@
 	(else     (invoke (evaluate (car e) env)
 			  (evlis (cdr e) env) )) ) ) )   
 
+(define (atom? e)
+  (not (pair? e)))
+
+(define (wrong msg e) 
+  (display msg)
+  (display ": ")
+  (display e)
+  (display "\n"))
+
+(define (add x y)
+  (+ x y))
+
 ; eprogn: Evaluate expressions (exps) with environment (env) sequentially in order.
 ; Only executes if (exps) is a pair? 
 (define (eprogn exps env) 
