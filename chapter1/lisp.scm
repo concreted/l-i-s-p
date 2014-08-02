@@ -35,7 +35,7 @@
   (if (pair? exps)
       (cons (evaluate (car exps) env)
 	    (evlis (cdr exps) env) )
-      ;() ) )
+      '() ) )
 
 ; lookup: Lookup variable (id) in the environment association list (env).
 (define (lookup id env)
@@ -84,11 +84,11 @@
   (lambda (values)
     (eprogn body (extend env variables values)) ) )
 
-#|
+#!
 ; evlis - defined with left-to-right evaluation. 
 (define (evlis exps env)
   (if (pair? exps)
       (let ((argument1 (evaluate (car exps) env)))
 	(cons argument1 (evlis (cdr exps) env)) )
-      ;() ) )
-|#
+      '() ) )
+!#
