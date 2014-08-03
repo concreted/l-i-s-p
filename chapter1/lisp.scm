@@ -4,6 +4,7 @@
 ; reproduced by Aric Huang
 ; =========================================================================
 
+(use-syntax (ice-9 syncase)) ;required for define-syntax
 
 ; Language definition/special forms
 ; =========================================================================
@@ -128,7 +129,7 @@
 		    (list 'name values) ) ) ) ) ) ) )
 
 (definitial t #t)
-(definitial f the-false-value)
+(definitial f #f)
 (definitial nil '())
 
 (definitial foo)
@@ -143,8 +144,20 @@
 (defprimitive eq? eq? 2)
 (defprimitive < < 2)
 
-(define (add x y)
-  (+ x y))   
+
+; Interpreter
+; =========================================================================
+
+(define (chapter1-scheme)
+  (define (toplevel)
+    (display "l-i-s-p> ")
+    (display (evaluate (read) env.global))
+    (newline)
+    (toplevel) )
+  (toplevel) )
+
+(chapter1-scheme)
+
 
 ; Other - unused, variants
 ; =========================================================================
