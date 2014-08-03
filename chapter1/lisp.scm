@@ -1,3 +1,16 @@
+; L-I-S-P
+; lisp in small pieces
+; book by Christian Quennec, Kathleen Calloway
+; reproduced by Aric Huang
+; =========================================================================
+
+
+; Language definition/special forms
+; =========================================================================
+
+(define env.init '())
+(define empty-begin 813)
+
 ; evaluate: takes program expression (e) and environment (env) as input. 
 ; Environment is a data structure associating variables and values. 
 (define (evaluate e env) 
@@ -17,6 +30,7 @@
 	(else     (invoke (evaluate (car e) env)
 			  (evlis (cdr e) env) )) ) ) )   
 
+; Helper functions for evaluate
 (define (atom? e)
   (not (pair? e)))
 
@@ -25,9 +39,6 @@
   (display ": ")
   (display e)
   (display "\n"))
-
-(define (add x y)
-  (+ x y))
 
 ; eprogn: Evaluate expressions (exps) with environment (env) sequentially in order.
 ; Only executes if (exps) is a pair? 
@@ -38,8 +49,6 @@
 		 (eprogn (cdr exps) env) )
 	  (evaluate (car exps) env) )
       empty-begin) )
-
-(define empty-begin 813)
 
 ; evlis: Evaluate list of expressions (exps) and returns result values in a list.
 ; Evaluates right-to-left.
@@ -65,8 +74,6 @@
 		 value)
 	  (update! id (cdr env) value) )
       (wrong "No such binding" id) ))
-
-(define env.init '())
 
 ; extend: Adds list of variables (variables) and corresponding 
 ; values (values) to environment (env)
@@ -95,6 +102,16 @@
 (define (make-function variables body env)
   (lambda (values)
     (eprogn body (extend env variables values)) ) )
+
+
+; Library functions/macros
+; =========================================================================
+(define (add x y)
+  (+ x y))
+
+
+; Other - unused, variants
+; =========================================================================
 
 #!
 ; evlis - defined with left-to-right evaluation. 
