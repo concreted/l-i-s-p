@@ -1,0 +1,8 @@
+Deep binding: value of variables stored in an association list. 
+  Simpler to change environment, slower to lookup values.
+
+Shallow binding: value of variables stored in a property field of the variable. 
+  Faster to lookup values, higher cost in function calls (need to remember and 
+  restore old variable values after each call).
+
+Re-rooting: Technique from Henry Baker to combine deep/shallow binding. 
