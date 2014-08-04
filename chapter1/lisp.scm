@@ -12,31 +12,36 @@
 ; evaluate: takes program expression (e) and environment (env) as input. 
 ; Environment is a data structure associating variables and values. 
 (define (evaluate e env) 
-  (if (atom? e)                             ; (atom? e) == (not (pair? e))
-      (cond ((symbol? e) (lookup e env))
-	    ((or (number? e) (string? e) (char? e) (boolean? e) (vector? e))
-	     e)
-	    (else (wrong "Cannot evaluate" e)) )
-      (case (car e)
-	((quote)  (cadr e))
-	((if)     (if (evaluate (cadr e) env)
-		      (evaluate (caddr e) env)
-		      (evaluate (cadddr e) env) ))
-	((begin)  (eprogn (cdr e) env))
-	((set!)   (update! (cadr e) env (evaluate (caddr e) env)))
-	((lambda) (make-function (cadr e) (cddr e) env))
-	(else     (invoke (evaluate (car e) env)
-			  (evlis (cdr e) env) )) ) ) )   
+  (define (eval)
+    (if (atom? e)                             ; (atom? e) == (not (pair? e))
+	(cond ((symbol? e) (lookup e env))
+	      ((or (number? e) (string? e) (char? e) (boolean? e) (vector? e))
+	       e)
+	      (else (wrong "Cannot evaluate" e)) )
+	(case (car e)
+	  ((quote)  (cadr e))
+	  ((if)     (if (evaluate (cadr e) env)
+			(evaluate (caddr e) env)
+			(evaluate (cadddr e) env) ))
+	  ((begin)  (eprogn (cdr e) env))
+	  ((set!)   (update! (cadr e) env (evaluate (caddr e) env)))
+	  ((lambda) (make-function (cadr e) (cddr e) env))
+	  (else     (invoke (evaluate (car e) env)
+			    (evlis (cdr e) env) )) ) ) )
 
-; Helper functions for evaluate
-(define (atom? e)
-  (not (pair? e)))
+  (define (trace)
+    (if (pair? e)
+	(let ((result (eval)))
+	  (display e)
+	  (display ": ")
+	  (display result)
+	  (newline)
+	  result)
+	(eval)) ) 
 
-(define (wrong msg e) 
-  (display msg)
-  (display ": ")
-  (display e)
-  (display "\n"))
+  (if trace? 
+      (trace)
+      (eval)) )
 
 ; eprogn: Evaluate expressions (exps) with environment (env) sequentially in order.
 ; Only executes if (exps) is a pair? 
@@ -102,6 +107,24 @@
     (eprogn body (extend env variables values)) ) )
 
 
+; Helper functions
+; =========================================================================
+
+(define (println msg)
+  (display msg)
+  (newline))
+
+; Helper functions for evaluate
+(define (atom? e)
+  (not (pair? e)))
+
+(define (wrong msg e) 
+  (display msg)
+  (display ": ")
+  (display e)
+  (display "\n"))
+
+
 ; Library functions/macros
 ; =========================================================================
 
@@ -148,14 +171,30 @@
 ; Interpreter
 ; =========================================================================
 
+; Command line arguments
+(define trace? #f)
+(define test? #f)
+
+(define (handle-args args)
+  (if (pair? args)
+      (begin 
+	(if (string=? (car args) "-t")
+	    (begin
+	      (println "Trace on.")
+	      (set! trace? #t) ) )
+	(if (string=? (car args) "-test")
+	    (println "Test!") )
+	(handle-args (cdr args))) ) )
+
 (define (chapter1-scheme)
   (define (toplevel)
     (display "l-i-s-p> ")
     (display (evaluate (read) env.global))
     (newline)
-    (toplevel) )
+    (toplevel))
   (toplevel) )
 
+(handle-args (cdr (command-line)))
 (chapter1-scheme)
 
 
