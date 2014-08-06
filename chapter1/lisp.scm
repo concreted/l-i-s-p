@@ -57,8 +57,10 @@
 ; Evaluates right-to-left.
 (define (evlis exps env)
   (if (pair? exps)
-      (cons (evaluate (car exps) env)
-	    (evlis (cdr exps) env) )
+      (if (pair? (cdr exps))	  
+	  (cons (evaluate (car exps) env)
+		(evlis (cdr exps) env) ) 
+	  (cons (evaluate (car exps) env) '()))
       '() ) )
 
 ; lookup: Lookup variable (id) in the environment association list (env).
