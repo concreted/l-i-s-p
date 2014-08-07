@@ -145,7 +145,7 @@
     ((defprimitive name value arity)
      (definitial name
        (lambda (values)
-	 (if (= arity (length values))
+	 (if (or (= arity -1) (= arity (length values)))
 	     (apply value values)
 	     (wrong "Incorrect arity"
 		    (list 'name values) ) ) ) ) ) ) )
@@ -166,6 +166,7 @@
 (defprimitive eq? eq? 2)
 (defprimitive < < 2)
 
+(defprimitive list list -1)
 
 ; Interpreter
 ; =========================================================================
@@ -187,8 +188,8 @@
 
 (define (chapter1-scheme)
   (define (toplevel)
-    (display env.global)
-    (newline)
+    ;(display env.global)
+    ;(newline)
     (display "l-i-s-p> ")
     (display (evaluate (read) env.global))
     (newline)
