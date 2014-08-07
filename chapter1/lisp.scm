@@ -66,10 +66,12 @@
 ; lookup: Lookup variable (id) in the environment association list (env).
 (define (lookup id env)
   (if (pair? env)
-      (if (eq? (caar env) id)
-	  (cdar env)
-	  (lookup id (cdr env)) )
-      (wrong "No such binding" id) ))
+      (if (eq? (caaar env) id)
+	  (cadar env)
+	  (if (pair? (cdaar env))
+	      (lookup id (cons (cons (cdaar env) (cddar env)) (cdr env)))	  
+	      (lookup id (cdr env)) ) )
+      (wrong "No such binding" id) ) )
 
 ; update!: Sets variable (id) in environment (env) to a value (value).
 (define (update! id env value)
@@ -83,6 +85,8 @@
 ; extend: Adds list of variables (variables) and corresponding 
 ; values (values) to environment (env)
 (define (extend env variables values)
+  (cons (cons variables values) env) )
+#!
   (cond ((pair? variables)
 	 (if (pair? values)
 	     (cons (cons (car variables) (car values))
@@ -93,7 +97,7 @@
 	     env
 	     (wrong "Too many values") ) )
 	((symbol? variables) (cons (cons variables values) env)) ) )
-
+!#
 ; invoke: Call a function (fn) with arguments (args)
 (define (invoke fn args)
   (if (procedure? fn)
@@ -137,10 +141,12 @@
 (define-syntax definitial
   (syntax-rules ()
     ((definitial name)
-     (begin (set! env.global (cons (cons 'name 'void) env.global))
+     (begin (set! env.global (extend env.global '(name) '(void)))
+;(set! env.global (cons (cons 'name (car env.global)) (cons 'void (cdr env.global))))
 	    'name ) )
     ((definitial name value)
-     (begin (set! env.global (cons (cons 'name value) env.global))
+     (begin (set! env.global (extend env.global '(name) (list value)))
+;(set! env.global (cons (cons 'name (car env.global)) (cons value (cdr env.global))))
 	    'name ) ) ) )
 
 (define-syntax defprimitive
@@ -190,6 +196,8 @@
 
 (define (chapter1-scheme)
   (define (toplevel)
+    (display env.global)
+    (newline)
     (display "l-i-s-p> ")
     (display (evaluate (read) env.global))
     (newline)
