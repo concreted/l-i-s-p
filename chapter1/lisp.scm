@@ -76,28 +76,19 @@
 ; update!: Sets variable (id) in environment (env) to a value (value).
 (define (update! id env value)
   (if (pair? env)
-      (if (eq? (caar env) id)
-	  (begin (set-cdr! (car env) value)
+      (if (eq? (caaar env) id)
+	  (begin (set-car! (cdar env) value)
 		 value)
-	  (update! id (cdr env) value) )
-      (wrong "No such binding" id) ))
+	  (if (pair? (cdaar env))
+	      (update! (cons (cons (cdaar env) (cddar env)) (cdr env)))
+	      (update! id (cdr env) value) ) )
+      (wrong "No such binding" id) ) )
 
 ; extend: Adds list of variables (variables) and corresponding 
 ; values (values) to environment (env)
 (define (extend env variables values)
   (cons (cons variables values) env) )
-#!
-  (cond ((pair? variables)
-	 (if (pair? values)
-	     (cons (cons (car variables) (car values))
-		   (extend env (cdr variables) (cdr values)) )
-	     (wrong "Too few values") ) )
-	((null? variables)
-	 (if (null? values)
-	     env
-	     (wrong "Too many values") ) )
-	((symbol? variables) (cons (cons variables values) env)) ) )
-!#
+
 ; invoke: Call a function (fn) with arguments (args)
 (define (invoke fn args)
   (if (procedure? fn)
@@ -142,12 +133,12 @@
   (syntax-rules ()
     ((definitial name)
      (begin (set! env.global (extend env.global '(name) '(void)))
-;(set! env.global (cons (cons 'name (car env.global)) (cons 'void (cdr env.global))))
-	    'name ) )
+     ;(set! env.global (cons (cons 'name (car env.global)) (cons 'void (cdr env.global))))
+	    'name ) ) 
     ((definitial name value)
      (begin (set! env.global (extend env.global '(name) (list value)))
-;(set! env.global (cons (cons 'name (car env.global)) (cons value (cdr env.global))))
-	    'name ) ) ) )
+     ;(set! env.global (cons (cons 'name (car env.global)) (cons value (cdr env.global))))
+	    'name ) )) )
 
 (define-syntax defprimitive
   (syntax-rules ()
