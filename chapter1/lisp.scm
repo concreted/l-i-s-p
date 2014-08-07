@@ -60,7 +60,7 @@
       (if (pair? (cdr exps))	  
 	  (cons (evaluate (car exps) env)
 		(evlis (cdr exps) env) ) 
-	  (cons (evaluate (car exps) env) '()))
+	  (list (evaluate (car exps) env)))
       '() ) )
 
 ; lookup: Lookup variable (id) in the environment association list (env).
@@ -165,9 +165,14 @@
 (defprimitive + + 2)
 (defprimitive eq? eq? 2)
 (defprimitive < < 2)
+(defprimitive > > 2)
 
 (defprimitive list list -1)
 (defprimitive apply (lambda (f vals) (f vals)) 2)
+
+; When called, causes two shell prompts to be written. Why?
+; Same thing happens in repl.scm.
+(defprimitive quit (lambda () (quit) ) 0 )
 
 ; Interpreter
 ; =========================================================================
@@ -192,9 +197,8 @@
     ;(display env.global)
     ;(newline)
     (display "l-i-s-p> ")
-    (display (evaluate (read) env.global))
-    (newline)
-    (toplevel))
+    (println (evaluate (read) env.global))
+    (toplevel) )
   (toplevel) )
 
 (handle-args (cdr (command-line)))

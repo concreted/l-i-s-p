@@ -1,0 +1,6 @@
+(define (repl)
+  (display "repl> ")
+  (display (primitive-eval (read)))
+  (newline)
+  (repl))
+(repl)
