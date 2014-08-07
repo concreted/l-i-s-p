@@ -150,6 +150,17 @@
 	     (wrong "Incorrect arity"
 		    (list 'name values) ) ) ) ) ) ) )
 
+; (compare) translates comparison functions to definition language.
+; Should this return defined language's true/false values (t/f) 
+; or implementation language's (#t/#f)? (currently returns (#t/#f)
+; If return (t/f), will need to evaluate (t/f) to translate to 
+; (#t/#f) anyway for if statements to work (see (if) handler 
+; in (evaluate)). 
+(define (compare f)
+  (lambda (a b) (if (f a b) 
+		    (evaluate 't env.global) 
+		    (evaluate 'f env.global)) ) )
+
 (definitial t #t)
 (definitial f #f)
 (definitial nil '())
@@ -163,8 +174,9 @@
 (defprimitive car car 1)
 (defprimitive set-cdr! set-cdr! 2)
 (defprimitive + + 2)
-(defprimitive eq? eq? 2)
-(defprimitive < < 2)
+(defprimitive eq? (compare eq?) 2)
+(defprimitive < (compare <) 2)
+(defprimitive > (compare >) 2)
 
 
 ; Interpreter
@@ -187,8 +199,8 @@
 
 (define (chapter1-scheme)
   (define (toplevel)
-    (display env.global)
-    (newline)
+    ;(display env.global)
+    ;(newline)
     (display "l-i-s-p> ")
     (display (evaluate (read) env.global))
     (newline)
