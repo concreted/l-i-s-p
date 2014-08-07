@@ -167,6 +167,7 @@
 (defprimitive < < 2)
 
 (defprimitive list list -1)
+(defprimitive apply (lambda (f vals) (f vals)) 2)
 
 ; Interpreter
 ; =========================================================================
