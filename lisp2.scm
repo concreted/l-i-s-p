@@ -19,7 +19,8 @@
 			    (evlis (cdr e) env) )) ) ) )
 
 
-(load "pieces/env.scm")
+(load "pieces/env-init.scm")
+(load "pieces/env-def.scm")
 (load "pieces/repl.scm")
 
 (repl)
