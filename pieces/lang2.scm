@@ -4,7 +4,6 @@
 ; evaluate: takes program expression (e) and environment (env) as input. 
 ; Environment is a data structure associating variables and values. 
 (define (evaluate e env) 
-  (define (eval)
     (if (atom? e)                             ; (atom? e) == (not (pair? e))
 	(cond ((symbol? e) (lookup e env))
 	      ((or (number? e) (string? e) (char? e) (boolean? e) (vector? e))
@@ -21,19 +20,6 @@
 	  (else     (invoke (lookup (car e) env)
 			    (evlis (cdr e) env) )) ) ) )
 
-  (define (trace)
-    (if (pair? e)
-	(let ((result (eval)))
-	  (display e)
-	  (display ": ")
-	  (display result)
-	  (newline)
-	  result)
-	(eval)) ) 
-
-  (if trace? 
-      (trace)
-      (eval)) )
 
 ; eprogn: Evaluate expressions (exps) with environment (env) sequentially in order.
 ; Only executes if (exps) is a pair? 
